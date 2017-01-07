@@ -1,0 +1,1 @@
+# ruby-jenkins-slave-docker
