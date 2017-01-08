@@ -1,6 +1,8 @@
 FROM johnmccabe/jenkins-slave:latest
 MAINTAINER John McCabe <john@johnmccabe.net>
 
+COPY .ruby.bashrc /home/jenkins
+
 # Install Ruby
 RUN apt-get -q update &&\
     DEBIAN_FRONTEND="noninteractive" apt-get -q install -y --no-install-recommends \
@@ -13,9 +15,7 @@ RUN apt-get -q update &&\
         zlib1g-dev && \
     git clone https://github.com/rbenv/rbenv.git /home/jenkins/.rbenv && \
     git clone https://github.com/rbenv/ruby-build.git /home/jenkins/.rbenv/plugins/ruby-build && \
-    echo 'export PATH=/home/jenkins/.rbenv/bin:$PATH' >> /home/jenkins/.bashrc && \
-    echo 'eval "$(rbenv init -)"' >> /home/jenkins/.bashrc && \
-    echo 'export CONFIGURE_OPTS=--disable-install-doc' >> /home/jenkins/.bashrc && \
+    sed -i '/for examples/a . ~/.ruby.bashrc' /home/jenkins/.bashrc && \
     chown -R jenkins:jenkins /home/jenkins && \
     su - jenkins -c 'rbenv install 2.3.3' && \
     su - jenkins -c 'rbenv global 2.3.3' && \
